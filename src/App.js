@@ -1,24 +1,32 @@
 import { useState, useEffect } from "react";
 import Header from "./components/ui/Header";
+import Search from "./components/ui/Search";
 import CharacterGrid from "./components/characters/CharacterGrid";
+
 import "./App.css";
 
-import { ApiData } from "./apis";
+import axios from "axios";
 
 function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    ApiData()
-      .then((data) => setItems(data))
-      .catch((err) => console.log(err));
+  const [query, setQuery] = useState("");
 
-    setLoading(false);
-  }, []);
+  useEffect(() => {
+    const ApiData = async () => {
+      const { data } = await axios(
+        `https://breakingbadapi.com/api/characters?name=${query}`
+      ).catch((err) => console.log(err));
+      setItems(data);
+      setLoading(false);
+    };
+    ApiData();
+  }, [query]);
 
   return (
     <div className="container">
       <Header />
+      <Search getQuery={(q) => setQuery(q)} />
       <CharacterGrid isLoading={loading} items={items} />
     </div>
   );
