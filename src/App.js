@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react";
+import Header from "./components/ui/Header";
+import CharacterGrid from "./components/characters/CharacterGrid";
+import "./App.css";
+
+import { ApiData } from "./apis";
 
 function App() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    ApiData()
+      .then((data) => setItems(data))
+      .catch((err) => console.log(err));
+
+    setLoading(false);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Header />
+      <CharacterGrid isLoading={loading} items={items} />
     </div>
   );
 }
